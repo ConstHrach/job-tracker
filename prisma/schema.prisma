@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// A User is anyone who signs up to the app
+// Each user has their own private list of job applications
+model User {
+  id           String           @id @default(cuid()) // unique ID auto-generated for each user
+  email        String           @unique              // no two users can have the same email
+  name         String?                               // optional - the ? means it can be empty
+  password     String                                // hashed password (never stored as plain text)
+  createdAt    DateTime         @default(now())      // automatically set when the user is created
+  applications JobApplication[]                      // one user can have many job applications
+}
+
+// A JobApplication is one job you've applied to
+model JobApplication {
+  id          String   @id @default(cuid()) // unique ID for each application
+  company     String                        // name of the company e.g. "Google"
+  role        String                        // job title e.g. "Software Engineer"
+  status      String   @default("Applied")  // where you are in the process
+  location    String?                       // optional - city or "Remote"
+  salary      String?                       // optional - e.g. "$120k - $150k"
+  jobUrl      String?                       // optional - link to the job posting
+  notes       String?                       // optional - any notes you want to keep
+  appliedAt   DateTime @default(now())      // when you applied
+  updatedAt   DateTime @updatedAt           // automatically updates whenever you change this row
+  userId      String                        // links this application to a specific user
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade) // if a user is deleted, delete their applications too
+}
