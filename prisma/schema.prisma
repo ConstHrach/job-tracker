@@ -29,6 +29,7 @@ model JobApplication {
   salary      String?                       // optional - e.g. "$120k - $150k"
   jobUrl      String?                       // optional - link to the job posting
   notes       String?                       // optional - any notes you want to keep
+  jobType     String?                       // optional - Full Time, Part Time, Internship, Contract, etc.
   appliedAt   DateTime @default(now())      // when you applied
   updatedAt   DateTime @updatedAt           // automatically updates whenever you change this row
   userId      String                        // links this application to a specific user
